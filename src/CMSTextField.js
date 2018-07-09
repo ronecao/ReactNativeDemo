@@ -1,103 +1,89 @@
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
-export default class CMSTextField extends Component{
-    
-   
-     
-   
-       constructor(props) {
-           super(props);
-           this.state = {
-            money:'',
-            endEdit:true,
-            disabled:true,
-            
-        };
-        //this.fmoney = this.fmoney.bind(this);
-           
-         }
+export default class CMSTextField extends Component {
+  constructor(props) {
+    super(props);
 
-    /**
-     * formatting the money value
-     * @param s
-     * @param n
-     * @returns {*}
-     */
-    fmoney(s, n){  
-        let header,tail; 
-        switch(s.length)
-        {
-            case 0:
-                s='0.00';
-            break;
-            case 1:
-                s='0.0'+s;
-            break;
-            case 2:
-                s='0.'+s;
-            break;
-            default:
-                header=s.substring(0,s.length-2);
-                tail=s.substring(s.length-2);
-                
-                return header+'.'+tail;
-            break;
-        }
-        //this.setState({money:s})
-        return s;
-   } 
-    enable = () => {
-        this.setState({
-            disabled: true
-        })
+    this.state = {
+      money: '',
+      endEdit: true,
+      disabled: true,
+      placeholder: 'enter Amount',
     };
-    /**
-     * disable the component
-     */
-    disable = () => {
+  }
+
+    getvalue = () => this.fmoney(this.state.money, 2);
+
+  enable = () => {
+    this.setState({
+      disabled: true,
+    });
+  };
+  /**
+   * disable the component
+   */
+  disable = () => {
     console.log('disable');
-        this.setState({
-            disabled: false
-        })
-    };
-    getvalue=()=>{
-        return this.fmoney(this.state.money,2);
-    };
-         render() {
-            return (
-              
-                <TextInput
-                ref="amountinput"
-                editable={this.state.disabled}
-                style={{height: 40,width:200, justifyContent:'flex-start'}}
-                placeholder={this.props.placeholder}
-                value={this.state.endEdit?this.fmoney(this.state.money,2):this.state.money+''}
-                onChangeText={(text)=>{
-                    this.setState({money:text});    
-                }}      
-                onFocus={()=>{
-                    // this.setState({endEdit:false});
-                    this.setState({endEdit:false,money:''});
+    this.setState({
+      disabled: false,
+    });
+  };
+  /**
+   * formatting the money value
+   * @param s
+   * @param n
+   * @returns {*}
+   */
+  fmoney = (s, n) => {
+    let header;
+    let tail;
+    let retvalue = s;
+    switch (retvalue.length) {
+      case 0:
+        retvalue = '0.00';
+        break;
+      case 1:
+        retvalue = `0.0${retvalue}`;
+        break;
+      case 2:
+        retvalue = `0.${retvalue}`;
+        break;
+      default:
+        header = retvalue.substring(0, retvalue.length - n);
+        tail = retvalue.substring(retvalue.length - n);
+        return `${header}.${tail}`;
+    }
+    return retvalue;
+  }
+  render() {
+    const refstr = 'amountinput';
+    return (
+      <TextInput
+        ref={refstr}
+        editable={this.state.disabled}
+        style={styles.fieldstyle}
+        placeholder={this.state.placeholder}
+        value={this.state.endEdit ? this.fmoney(this.state.money, 2) : `${this.state.money}`}
+        onChangeText={(text) => {
+                    this.setState({ money: text });
                 }}
-                onEndEditing={(event) => {
-                    this.setState({endEdit:true});
+        onFocus={() => {
+                    this.setState({ endEdit: false, money: '' });
                 }}
-              
-                />
-                
-                
-                
-                
-
-
-                  
-            );
-        }
+        onEndEditing={(event) => {
+                    console.log(event);
+                    this.setState({ endEdit: true });
+                }}
+      />
+    );
+  }
 }
-   
+
+const styles = StyleSheet.create({
+  fieldstyle: {
+    height: 40,
+    width: 200,
+    justifyContent: 'flex-start',
+  },
+});
